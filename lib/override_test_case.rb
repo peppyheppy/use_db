@@ -25,7 +25,7 @@ module Test #:nodoc:
           
           for klass in UseDbPlugin.all_use_dbs
           
-            # puts "Establishing TRANSACTION for #{klass}..."
+            puts "Establishing TRANSACTION for #{klass}..." if UseDbPlugin.debug_print
             
             klass.send :increment_open_transactions
             klass.connection.begin_db_transaction
@@ -49,7 +49,7 @@ module Test #:nodoc:
 
         for klass in UseDbPlugin.all_use_dbs
 
-          # puts "Finishing TRANSACTION for #{klass}..."
+          puts "Finishing TRANSACTION for #{klass}..." if UseDbPlugin.debug_print
 
           # Rollback changes if a transaction is active.
           if use_transactional_fixtures? && Thread.current['open_transactions'] != 0

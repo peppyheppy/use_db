@@ -10,13 +10,19 @@ module UseDbPlugin
   #   :username
   #   :password
   #     ... etc ... same as the options in establish_connection
+  #  
+  # Set the following to true in your test environment 
+  # to enable extended debugging printing during testing ...
+  # UseDbPlugin.debug_print = true   
+  #
   
   @@use_dbs = [ActiveRecord::Base]
+  @@debug_print = false
   
   def use_db(options)
     options_dup = options.dup
     conn_spec = get_use_db_conn_spec(options)
-    puts "Establishing connecting on behalf of #{self.to_s} to #{conn_spec.inspect}"
+    puts "Establishing connecting on behalf of #{self.to_s} to #{conn_spec.inspect}" if UseDbPlugin.debug_print
     establish_connection(conn_spec)
     extend ClassMixin
     @@use_dbs << self unless @@use_dbs.include?(self) || self.to_s.starts_with?("TestModel")
@@ -24,6 +30,14 @@ module UseDbPlugin
   
   def self.all_use_dbs
     return @@use_dbs
+  end
+  
+  def self.debug_print
+    return @@debug_print
+  end
+  
+  def self.debug_print=(newval)
+    @@debug_print = newval
   end
   
   module ClassMixin
