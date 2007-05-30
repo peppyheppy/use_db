@@ -44,9 +44,7 @@ module UseDbPlugin
     def uses_db?
       true
     end
-  end
-  
-  private
+  end  
   
   def get_use_db_conn_spec(options)
     options.symbolize_keys
@@ -62,4 +60,8 @@ module UseDbPlugin
       return connections[str]
     end
   end
+end
+
+class UseDbPluginClass
+  extend UseDbPlugin
 end

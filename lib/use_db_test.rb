@@ -2,8 +2,12 @@ require "use_db.rb"
 require "test_model.rb"
 
 class UseDbTest
-  
+
   extend UseDbPlugin
+
+  def self.other_databases
+    YAML.load(File.read("#{RAILS_ROOT}/config/use_db.yml")).values.collect(&:symbolize_keys!)
+  end
 
   def self.prepare_test_db(options)
     dump_db_structure(options)
@@ -137,14 +141,12 @@ class UseDbTest
     test_class.connection.disconnect!        
   end
 
-protected
-
-  def self.setup_test_model(prefix="", suffix="", model_suffix="")
+  def self.setup_test_model(prefix="", suffix="", model_suffix="", rails_env=RAILS_ENV)
     prefix ||= ""
     suffix ||= ""
     model_name = "TestModel#{prefix.camelize}#{suffix.camelize}#{model_suffix}".gsub("_","").gsub("-","")
     return eval(model_name) if eval("defined?(#{model_name})")
-    create_test_model(model_name, prefix, suffix)
+    create_test_model(model_name, prefix, suffix, rails_env)
     return eval(model_name)
   end
 end
